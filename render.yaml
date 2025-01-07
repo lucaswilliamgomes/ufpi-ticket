@@ -1,0 +1,23 @@
+databases:
+  - name: ufpi_ticket
+    databaseName: ufpi_ticket
+    user: ufpi_ticket
+    plan: free
+
+services:
+  - type: web
+    name: ufpi_ticket_api
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+    startCommand: "bundle exec rails server"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ufpi_ticket
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2 # sensible default
